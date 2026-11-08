@@ -5,7 +5,7 @@ project(Software-Renderer VERSION 1.0 LANGUAGES C CXX)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(PkgConfig REQUIRED)
@@ -29,3 +29,9 @@ target_link_libraries(Software-Renderer PRIVATE
 target_compile_options(Software-Renderer PRIVATE
   -Wall -Wextra -Wpedantic -DWINDOW_BACKEND_SDL3
 )
+
+include(CTest)
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
