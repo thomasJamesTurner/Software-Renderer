@@ -8,6 +8,11 @@
 //returns the same type if type given is dynamic, if not returns a vector array
 //allows for user freedom when writing abstract maths functions
 //writen by claude and so needs testing
+
+template <class C>
+concept Growable = std::ranges::range<C> &&
+    requires(C c, std::ranges::range_value_t<C> x) { c.insert(c.end(), x); };
+
 template <class Like, std::ranges::input_range S>
 auto collect_like(S&& src) {
     using L = std::remove_cvref_t<Like>;
@@ -48,11 +53,11 @@ auto dot(const A& a, const B& b)
   }
 
   T output{};
-  auto ib = std::ranges::begin(b)
+  auto ib = std::ranges::begin(b);
   for(const auto& x : a)
   {
     output += x * *ib;    //ib is a pointer and is being dereferenced
     ib++;
   }
-  return output
+  return output;
 }
