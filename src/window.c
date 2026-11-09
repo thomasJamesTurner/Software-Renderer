@@ -35,3 +35,13 @@ void window_update(Window* window)
 {
     window->update_window(window);
 }
+
+void window_draw(Window* window,void(*func_ptr)())
+{
+    window->draw_window(window, func_ptr);
+}
+
+void window_draw_line(Window* window, Vec2 start, Vec2 end,Colour colour)
+{
+    window->draw_line_window(window, start, end, colour);
+}

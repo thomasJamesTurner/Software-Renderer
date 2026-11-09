@@ -124,6 +124,24 @@ static void sdl3_update_window(Window* this)
     SDL_RenderPresent(data->renderer);
 }
 
+static void sdl3_draw_line_window(Window* this, Vec2 start, Vec2 end, Colour colour)
+{
+    SDL3WindowData* data = this->backend_data;
+
+    SDL_SetRenderDrawColor(
+        data->renderer,
+        colour.r,
+        colour.g,
+        colour.b,
+        colour.a
+    );
+
+    SDL_RenderLine(
+        data->renderer,
+        (float)start.x, (float)start.y,
+        (float)end.x,   (float)end.y
+    );
+}
 void sdl3_window_init(Window* window)
 {
     window->backend_data       = NULL;
@@ -132,4 +150,5 @@ void sdl3_window_init(Window* window)
     window->poll_events_window = sdl3_poll_events_window;
     window->update_window      = sdl3_update_window;
     window->clear_window       = sdl3_clear_window;
+    window->draw_line_window   = sdl3_draw_line_window;
 }
