@@ -14,6 +14,7 @@ pkg_check_modules(SDL3 REQUIRED IMPORTED_TARGET sdl3)
 add_executable(Software-Renderer
     src/main.c
     src/window.c
+    src/renderer.c
     src/backends/sdl3/sdl3_backend.c
 )
 
