@@ -10,7 +10,8 @@ Vec3 vertices[] = {
 
 int indices[] = {
     0, 1, 2,   // first triangle
-    0, 2, 3    // second triangle
+    0, 2, 3,   // second triangle
+    3, 2, 1    // third triangle, should see a cross patern 
 };
 
 int main(void)
@@ -26,10 +27,11 @@ int main(void)
     if (!window_create(&window)) {
         return 1;
     }
+    int index_count = sizeof(indices)/sizeof(indices[0]);
 
     while (window_poll_events(&window)) {
         window_clear(&window, (Colour){30, 30, 30, 255});
-        wireframe(&window, vertices, indices,6);
+        wireframe(&window, vertices, indices,index_count);
         window_update(&window);
     }
 
