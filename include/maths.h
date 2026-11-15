@@ -1,63 +1,24 @@
-#include <algorithm>
-#include <iterator>
-#include <ranges>
-#include <vector>
+#ifndef MATHS_H
+#define MATHS_H
 
-//ideally most of this is abstracted so that user does not need to worry about data types
+#include <stddef.h>
+#include <stdbool.h>
+//declares the diffent dataype sufixes so Vec_f32 and Vec_f64 are distict types that are remembered
+#define DECLARE_TYPES(SUFFIX, T)                          \
+    typedef struct { T *data; size_t len; }  vec_##SUFFIX; \
+    typedef struct { T *data; size_t rows, cols; } mat_##SUFFIX;
 
-//returns the same type if type given is dynamic, if not returns a vector array
-//allows for user freedom when writing abstract maths functions
-//writen by claude and so needs testing
+DECLARE_TYPES(i32, int)
+DECLARE_TYPES(f32, float)
+DECLARE_TYPES(f64, double)
 
-template <class C>
-concept Growable = std::ranges::range<C> &&
-    requires(C c, std::ranges::range_value_t<C> x) { c.insert(c.end(), x); };
+#define DECLARE_OPS(SUFFIX)                                                \
+    vec_##SUFFIX vec_make_##SUFFIX(size_t len);                            \
+    vec_##SUFFIX vec_add_##SUFFIX(vec_##SUFFIX a, vec_##SUFFIX b);         \
+    mat_##SUFFIX matmul_##SUFFIX(mat_##SUFFIX a, mat_##SUFFIX b);
 
-template <class Like, std::ranges::input_range S>
-auto collect_like(S&& src) {
-    using L = std::remove_cvref_t<Like>;
-    using T = std::ranges::range_value_t<S>;
-    if constexpr (Growable<L> && std::convertible_to<T, std::ranges::range_value_t<L>>)
-        return std::ranges::to<L>(std::forward<S>(src));
-    else
-        return std::ranges::to<std::vector<T>>(std::forward<S>(src));
-}
+DECLARE_OPS(i32)
+DECLARE_OPS(f32)
+DECLARE_OPS(f64)
 
-
-//vector and mat templates, actual data structure is defined by users based on their needs
-template <class C>
-concept Associative = requires { typename std::remove_cvref_t<C>::key_type; };
-
-template <class V>
-concept Vec = std::ranges::forward_range<V> && !Associative<V> &&
-              std::is_arithmetic_v<std::ranges::range_value_t<V>>;
-
-template <class M>
-concept Mat = std::ranges::forward_range<M> && !Associative<M> &&
-              Vec<std::ranges::range_reference_t<M>>;
-
-// end of claude written code
-
-
-//maths functions
-
-template<Vec A,Vec B>
-auto dot(const A& a, const B& b)
-{
-  using T = std::common_type_t<std::ranges::range_value_t<A>,std::ranges::range_value_t<B>>;
-  
-  if (std::ranges::distance(a) != std::ranges::distance(b))
-  {
-    //TODO handle this without crashing completely
-    throw std::invalid_argument("dot product input vectors are not the same length");
-  }
-
-  T output{};
-  auto ib = std::ranges::begin(b);
-  for(const auto& x : a)
-  {
-    output += x * *ib;    //ib is a pointer and is being dereferenced
-    ib++;
-  }
-  return output;
-}
+#endif // !MATHS_H
